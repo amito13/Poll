@@ -5,7 +5,7 @@ import {
   timestamp,
   integer,
 } from "drizzle-orm/pg-core";
-
+import { relations} from "drizzle-orm";
 /* =========================
    USERS
 ========================= */
@@ -123,3 +123,35 @@ export const answers = pgTable("answers", {
 
   createdAt: timestamp().defaultNow(),
 });
+export const pollsRelations = relations( //one poll has many questions
+  polls,
+  ({ many }) => ({
+    questions: many(questions),
+  })
+);
+// Question
+// → belongs to Poll
+
+// Question
+// → has many Options
+export const questionsRelations = relations(
+  questions,
+  ({ one, many }) => ({
+    poll: one(polls, {
+      fields: [questions.pollId],
+      references: [polls.id],
+    }),
+
+    options: many(options),
+  })
+);
+
+export const optionsRelations = relations(
+  options,
+  ({ one }) => ({
+    question: one(questions, {
+      fields: [options.questionId],
+      references: [questions.id],
+    }),
+  })
+);

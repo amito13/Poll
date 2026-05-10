@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { createPoll } from '../controllers/poll.controller.js';
+import { createPoll , getPollsBySlug} from '../controllers/poll.controller.js';
 import {protect} from '../middleware/auth.middleware.js';
 
 const router = Router();
@@ -10,5 +10,5 @@ router.get("/test", (req, res) => {
     });
 });
 router.post("/", protect, createPoll);
-
+router.get("/:slug", getPollsBySlug);
 export default router;

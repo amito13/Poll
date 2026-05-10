@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import {db} from "../db/index.js";
 import { polls, questions, options } from "../db/schema.js";
 import slugify from "slugify";
+import { eq } from "drizzle-orm/sql/expressions/conditions";
 
 
 
@@ -62,7 +63,23 @@ export const createPoll = async (req: Request, res: Response) => {
                     .returning();
 
                 console.log(newQuestion);
+                for (const [optionIndex, optionText] of question.options.entries()) {
+                    const newOption = await db
+                        .insert(options)
+                        .values({
+                        questionId: newQuestion[0].id,
+
+                        text: optionText,
+
+                        
+                        })
+                        .returning();
+
+  console.log(newOption);
+  console.log(question.options);
+}
                 }
+                
 
        
 
@@ -82,4 +99,35 @@ export const createPoll = async (req: Request, res: Response) => {
     }
 
 
+};
+
+export const getPollsBySlug = async (req: Request, res: Response) => {
+    try{
+        const { slug } = req.params;
+
+        console.log("Fetching poll with slug:", slug);
+        const poll = await db.query.polls.findFirst({
+            where: eq(polls.slug, slug),
+            with: {
+                questions: {
+                    with: {
+                        options: true
+                    }
+
+                }
+            }
+        });
+        console.log("Fetched poll:", poll);
+        res.json({
+            success: true,
+            message: "Poll fetched successfully",
+            poll
+        })
+    } catch(error){
+        console.error("Error fetching poll:", error);
+        res.status(500).json({
+            message: "Error fetching poll",
+            success: false
+        })  
+    }   
 };
