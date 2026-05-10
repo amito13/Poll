@@ -20,6 +20,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.6.2",
     "postgres": "^3.4.9",
+    "slugify": "^1.6.9",
     "socket.io": "^4.8.3"
   },
   "devDependencies": {

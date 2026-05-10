@@ -18,7 +18,10 @@ export const protect = (req: Request, res: Response, next: NextFunction) => {
                 message: "unauthorized, no token provided"
             });
         }
-        const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
+            userId: number
+        }
+        req.user = decoded
         console.log("Decoded JWT payload:", decoded);  
         next();
     }catch(error){
