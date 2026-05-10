@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import {db} from "../db/index.js";
-import { polls } from "../db/schema.js";
+import { polls, questions, options } from "../db/schema.js";
 import slugify from "slugify";
 
 
@@ -14,9 +14,10 @@ export const createPoll = async (req: Request, res: Response) => {
             title,
             description,
             allowAnonymous,
-            expiresAt
+            expiresAt,
+            questions:pollQuestions
         } = req.body;
-
+        console.log(JSON.stringify(pollQuestions, null, 2));
          if (!expiresAt || !title) {
             return res.status(400).json({
                 message: "Title and expiresAt are required",
@@ -46,7 +47,22 @@ export const createPoll = async (req: Request, res: Response) => {
                     expiresAt: new Date(expiresAt),
                 })
              .returning();
+        
+             for (const [index, question] of pollQuestions.entries()) {
+                const newQuestion = await db
+                    .insert(questions)
+                    .values({
+                    pollId: newPoll[0].id,
 
+                    title: question.title,
+
+                    required: question.required,
+                    order: index,
+                    })
+                    .returning();
+
+                console.log(newQuestion);
+                }
 
        
 
@@ -58,10 +74,12 @@ export const createPoll = async (req: Request, res: Response) => {
 });
     }
     catch(error){
+        console.error("Error creating poll:", error);
         res.status(500).json({
             message: "Error creating poll",
            success: false
         })
     }
+
 
 };
