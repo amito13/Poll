@@ -1,9 +1,9 @@
 import type { Request, Response } from "express";
 import {db} from "../db/index.js";
-import { polls, questions, options } from "../db/schema.js";
+import { polls, questions, options, responses, answers } from "../db/schema.js";
 import slugify from "slugify";
 import { eq } from "drizzle-orm/sql/expressions/conditions";
-
+import {count} from "drizzle-orm"
 
 
 
@@ -130,4 +130,115 @@ export const getPollsBySlug = async (req: Request, res: Response) => {
             success: false
         })  
     }   
+};
+
+export const votePoll = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+
+    const { slug } = req.params;
+
+    const { answers:pollAnswers } = req.body;
+
+    console.log(slug);
+
+    console.log(pollAnswers);
+    const poll = await db.query.polls.findFirst({
+        where: eq(polls.slug, slug),
+        });
+
+        if (!poll) {
+        return res.status(404).json({
+            success: false,
+            message: "Poll not found",
+        });
+        }
+
+        const newResponse = await db
+        .insert(responses)
+        .values({
+            pollId: poll.id,
+        })
+        .returning();
+
+console.log(newResponse);
+        for (const answer of pollAnswers) {
+
+    const newAnswer = await db
+        .insert(answers)
+        .values({
+        responseId: newResponse[0].id,
+
+        questionId: answer.questionId,
+
+        optionId: answer.optionId,
+        })
+        .returning();
+
+    console.log(newAnswer);
+}
+    res.status(200).json({
+      success: true,
+      message: "Vote route working",
+    });
+
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Error submitting vote",
+    });
+  }
+};
+
+export const getPollResults = async (req: Request, res: Response) => {
+    try {
+
+        const { slug } = req.params;
+        console.log("Fetching results for poll with slug:", slug);
+        
+        const poll = await db.query.polls.findFirst({
+            where: eq(polls.slug, slug),
+            with: {
+                questions: {
+                    with: {
+                        options: true,
+                        }
+                    }
+                
+                }
+            }
+        );
+        for (const question of poll?.questions || []) {
+
+            for (const option of question.options) {
+
+        const votes = await db
+        .select({
+            count: count(),
+        })
+        .from(answers)
+        .where(eq(answers.optionId, option.id));
+
+        console.log({
+        option: option.text,
+        votes: votes[0].count,
+        });
+  }
+}
+        res.status(200).json({
+            success: true,
+            message: "Get results route working",
+            poll
+        });
+    } catch (error) {
+        console.error("Error fetching poll results:", error);
+        res.status(500).json({
+            success: false,
+            message: "Error fetching poll results",
+        });
+    }
 };
