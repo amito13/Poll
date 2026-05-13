@@ -6,7 +6,7 @@ import pollRoutes from "./routes/poll.route.js";
 const app = express();
 
 app.use(cors({
-  origin: "https://poll-hazel.vercel.app/",
+  origin: process.env.FRONTEND_URL||"http://localhost:5173",
 }));
 
 
