@@ -73,12 +73,35 @@ const Navbar = () => {
       
           {token ? (
 
-            <Link
-              to="/create"
-              className="bg-orange-500 hover:bg-orange-600 transition-all duration-200 px-5 py-2 rounded-xl font-semibold"
-            >
-              Create Poll
-            </Link>
+            <div className="flex items-center gap-3">
+
+                    <Link
+                      to="/create"
+                      className="bg-orange-500 hover:bg-orange-600 transition-all duration-200 h-12 px-6 rounded-xl font-semibold flex items-center justify-center text-white"
+                    >
+                      Create Poll
+                    </Link>
+
+                <button
+                  onClick={() => {
+
+                    localStorage.removeItem("token");
+
+                    window.location.href = "/login";
+
+                  }}
+                  className={`h-12 px-6 rounded-xl transition-all duration-200 border
+
+                  ${
+                    theme === "dark"
+                      ? "border-zinc-700 hover:border-red-500"
+                      : "border-orange-200 hover:border-red-500"
+                  }`}
+                >
+                  Logout
+                </button>
+
+              </div>
         
           ) : (
 
@@ -108,11 +131,11 @@ const Navbar = () => {
 
           )}
           <button
-  onClick={toggleTheme}
-  className="border border-zinc-700 hover:border-orange-500 transition-all duration-200 px-4 py-2 rounded-xl"
->
-  {theme === "dark" ? "☀️" : "🌙"}
-</button>
+            onClick={toggleTheme}
+            className="border border-zinc-700 hover:border-orange-500 transition-all duration-200 px-4 py-2 rounded-xl"
+          >
+            {theme === "dark" ? "☀️" : "🌙"}
+          </button>
 
         </div>
 
