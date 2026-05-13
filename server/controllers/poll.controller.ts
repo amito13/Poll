@@ -195,11 +195,14 @@ console.log(newResponse);
 };
 
 export const getPollResults = async (req: Request, res: Response) => {
+    
     try {
 
         const { slug } = req.params;
         console.log("Fetching results for poll with slug:", slug);
         
+        const resultsData = [];
+
         const poll = await db.query.polls.findFirst({
             where: eq(polls.slug, slug),
             with: {
@@ -212,9 +215,21 @@ export const getPollResults = async (req: Request, res: Response) => {
                 }
             }
         );
-        for (const question of poll?.questions || []) {
+       for (const question of poll?.questions || [])    {
 
-            for (const option of question.options) {
+        const questionResult = {
+            questionId: question.id,
+
+            question: question.title,
+
+            options: [] as {
+            optionId: number;
+            text: string;
+            votes: number;
+            }[],
+        };
+
+    for (const option of question.options) {
 
         const votes = await db
         .select({
@@ -223,17 +238,28 @@ export const getPollResults = async (req: Request, res: Response) => {
         .from(answers)
         .where(eq(answers.optionId, option.id));
 
-        console.log({
-        option: option.text,
+        questionResult.options.push({
+        optionId: option.id,
+
+        text: option.text,
+
         votes: votes[0].count,
         });
   }
+  resultsData.push(questionResult);
 }
-        res.status(200).json({
+      res.status(200).json({
             success: true,
-            message: "Get results route working",
-            poll
-        });
+
+            poll: {
+                id: poll?.id,
+                title: poll?.title,
+                description: poll?.description,
+                slug: poll?.slug,
+            },
+
+            results: resultsData,
+            });
     } catch (error) {
         console.error("Error fetching poll results:", error);
         res.status(500).json({

@@ -11,6 +11,6 @@ router.get("/test", (req, res) => {
 });
 router.post("/", protect, createPoll);
 router.get("/:slug", getPollsBySlug);
-router.post("/:slug/vote", protect, votePoll);
+router.post("/:slug/vote", votePoll);
 router.get("/:slug/results", getPollResults);
 export default router;
