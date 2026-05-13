@@ -31,7 +31,8 @@ const CreatePoll = () => {
         localStorage.getItem("token");
 
       const response = await axios.post(
-        "http://localhost:5000/api/polls",
+        // "http://localhost:5000/api/polls"
+        `import.meta.env.VITE_API_URL/api/polls` ,
         {
           ...pollData,
           allowAnonymous: true,
@@ -50,7 +51,7 @@ const CreatePoll = () => {
       const slug = response.data.poll.slug;
 
       setCreatedPollLink(
-        `http://localhost:5173/poll/${slug}`
+       ` import.meta.env.VITE_API_URL/${slug}`
       );
 
     } catch (error) {

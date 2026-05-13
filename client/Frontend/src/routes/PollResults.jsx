@@ -18,7 +18,7 @@
     useEffect(() => {
       const fetchResult = async () => {
         try {
-          const response = await axios.get(`http://localhost:5000/api/polls/${slug}/results`)
+          const response = await axios.get(`import.meta.env.VITE_API_URL/api/polls/${slug}/results`)
           console.log(response.data)
           setResults(response.data)
           
