@@ -1,5 +1,5 @@
 import "dotenv/config";
-import authRoutes from "./routes/auth.rotes.js";
+import authRoutes from "./routes/auth.routes.js";
 import express from "express";
 import cors from "cors";
 import pollRoutes from "./routes/poll.route.js";
