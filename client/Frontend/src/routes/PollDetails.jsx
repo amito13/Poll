@@ -19,7 +19,7 @@ const [voteSubmitted, setVoteSubmitted] =
       try {
 
         const response = await axios.get(
-          `import.meta.env.VITE_API_URL/api/polls/${slug}`
+          `${import.meta.env.VITE_API_URL}/api/polls/${slug}`
         );
 
         console.log(response.data);
@@ -47,7 +47,7 @@ const [voteSubmitted, setVoteSubmitted] =
       );
 
     const response = await axios.post(
-      `import.meta.env.VITE_API_URL/api/polls/${slug}/vote`,
+      `${import.meta.env.VITE_API_URL}/api/polls/${slug}/vote`,
       {
         answers: formattedAnswers,
       }
