@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-
+import socket from "../socket";
 const PollDetails = () => {
 
   const { slug } = useParams();
@@ -31,9 +31,27 @@ const [voteSubmitted, setVoteSubmitted] =
       }
     };
 
+
     fetchPoll();
 
+    
+
   }, [slug]);
+  useEffect(() => {
+
+  socket.on("pollUpdated", (updatedPoll) => {
+
+    setPoll(updatedPoll);
+
+  });
+
+  return () => {
+
+    socket.off("pollUpdated");
+
+  };
+
+}, []);
   const handleVoteSubmit = async () => {
 
   try {

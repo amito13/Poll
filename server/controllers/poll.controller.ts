@@ -4,7 +4,7 @@ import { polls, questions, options, responses, answers } from "../db/schema.js";
 import slugify from "slugify";
 import { eq } from "drizzle-orm/sql/expressions/conditions";
 import {count} from "drizzle-orm"
-
+import { getIo } from "../socket.js";
 
 
 
@@ -162,8 +162,8 @@ export const votePoll = async (
             pollId: poll.id,
         })
         .returning();
-
-console.log(newResponse);
+        
+        console.log(newResponse);
         for (const answer of pollAnswers) {
 
     const newAnswer = await db
@@ -215,6 +215,9 @@ export const getPollResults = async (req: Request, res: Response) => {
                 }
             }
         );
+      const io = getIo();
+
+io.emit("pollUpdated", poll);
        for (const question of poll?.questions || [])    {
 
         const questionResult = {
