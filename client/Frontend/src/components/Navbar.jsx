@@ -188,7 +188,7 @@ const Navbar = () => {
 
                   to="/register"
 
-                  className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white px-6 h-12 rounded-2xl font-bold flex items-center justify-center shadow-xl shadow-orange-500/30 transition-all duration-300"
+                  className="bg-linear-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white px-6 h-12 rounded-2xl font-bold flex items-center justify-center shadow-xl shadow-orange-500/30 transition-all duration-300"
                 >
                   Register
                 </Link>
