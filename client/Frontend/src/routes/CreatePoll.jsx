@@ -61,6 +61,18 @@ const CreatePoll = () => {
 );
     }
   };
+  
+const handlecopy = async () => {
+  const handleCopy = async () => {
+  try {
+    await navigator.clipboard.writeText(createdPollLink);
+    toast.success("Poll link copied!");
+  } catch (error) {
+    toast.error("Failed to copy link");
+  }
+};
+}
+
 
   return (
     <div
@@ -404,16 +416,7 @@ border`}
             />
 
             <button
-              onClick={() => {
-                navigator.clipboard.writeText(
-                  createdPollLink
-                  
-                );
-                toast.error(
-                  error?.response?.data?.message ||
-                  "Failed to create poll"
-                );
-              }}
+              onClick = {handlecopy}
               className="bg-orange-500 hover:bg-orange-600 transition-all duration-200 px-5 rounded-xl font-semibold text-white"
             >
               Copy
