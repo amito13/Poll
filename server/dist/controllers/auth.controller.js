@@ -1,21 +1,18 @@
-import type { Request, Response } from "express";
 import { db } from "../db/index.js";
 import * as schema from "./../db/schema.js";
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { users } from "./../db/schema.js";
 import jwt from "jsonwebtoken";
-
-export const register = async (req: Request, res: Response) => {
-
-    try{
-       const { name, email, password } = req.body;
-       if (!name || !email || !password) {
-        return res.status(400).json({
-            success: false,
-            message: "Name, email and password are required"
-        });
-         }
+export const register = async (req, res) => {
+    try {
+        const { name, email, password } = req.body;
+        if (!name || !email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "Name, email and password are required"
+            });
+        }
         const existingUser = await db.query.users.findFirst({
             where: eq(users.email, email)
         });
@@ -26,48 +23,41 @@ export const register = async (req: Request, res: Response) => {
             });
         }
         // console.log(existingUser);
-       //console.log(name, email, password);
+        //console.log(name, email, password);
         const hashedPassword = await bcrypt.hash(password, 10);
         //console.log("Hashed password:", hashedPassword);
-
         const newUser = await db.insert(users)
-        .values({
+            .values({
             name,
             email,
             password: hashedPassword
         })
-        .returning();
+            .returning();
         console.log("New user created:", newUser);
-
         const token = jwt.sign({
-            userId: newUser[0]!.id,
-        
-        },
-        process.env.JWT_SECRET!,
-        { expiresIn: "7d" });
+            userId: newUser[0].id,
+        }, process.env.JWT_SECRET, { expiresIn: "7d" });
         // console.log("Generated JWT token:", token);
-
-       res.status(201).json({
-        success: true,
-        message: "User registered successfully",
-        token,
-        user:{
-            id: newUser[0]!.id,
-            name: newUser[0]!.name,
-            email: newUser[0]!.email,
-
-        }
-         });
-    } catch (error) {
+        res.status(201).json({
+            success: true,
+            message: "User registered successfully",
+            token,
+            user: {
+                id: newUser[0].id,
+                name: newUser[0].name,
+                email: newUser[0].email,
+            }
+        });
+    }
+    catch (error) {
         res.status(500).json({
             success: false,
             message: "Error occurred while registering user"
         });
     }
 };
-
-export const login = async (req: Request, res: Response) => {
-    try{
+export const login = async (req, res) => {
+    try {
         const { email, password } = req.body;
         console.log("Login request received with email:", email);
         if (!email || !password) {
@@ -76,7 +66,7 @@ export const login = async (req: Request, res: Response) => {
                 message: "Email and password are required"
             });
         }
-        const existingUser  = await db.query.users.findFirst({
+        const existingUser = await db.query.users.findFirst({
             where: eq(users.email, email)
         });
         if (!existingUser) {
@@ -94,13 +84,9 @@ export const login = async (req: Request, res: Response) => {
                 message: "Invalid email or password"
             });
         }
-        
         const token = jwt.sign({
             userId: existingUser.id,
-        },
-        process.env.JWT_SECRET!,
-        { expiresIn: "7d" });
-
+        }, process.env.JWT_SECRET, { expiresIn: "7d" });
         res.status(200).json({
             success: true,
             message: "User logged in successfully",
@@ -111,10 +97,12 @@ export const login = async (req: Request, res: Response) => {
                 email: existingUser.email,
             }
         });
-    } catch (error) {
+    }
+    catch (error) {
         res.status(500).json({
             success: false,
             message: "Error occurred while logging in"
         });
     }
 };
+//# sourceMappingURL=auth.controller.js.map

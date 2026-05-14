@@ -73,12 +73,12 @@ export const createPoll = async (req: Request, res: Response) => {
 
                         
                         })
-                        .returning();
+                                    .returning();
 
-  console.log(newOption);
-  console.log(question.options);
-}
+                console.log(newOption);
+                console.log(question.options);
                 }
+                    }
                 
 
        
@@ -103,7 +103,7 @@ export const createPoll = async (req: Request, res: Response) => {
 
 export const getPollsBySlug = async (req: Request, res: Response) => {
     try{
-        const { slug } = req.params;
+        const slug = String(req.params.slug);
 
         console.log("Fetching poll with slug:", slug);
         const poll = await db.query.polls.findFirst({
@@ -138,7 +138,7 @@ export const votePoll = async (
 ) => {
   try {
 
-    const { slug } = req.params;
+  const slug = String(req.params.slug);
 
     const { answers:pollAnswers } = req.body;
 
@@ -198,7 +198,7 @@ export const getPollResults = async (req: Request, res: Response) => {
     
     try {
 
-        const { slug } = req.params;
+       const slug = String(req.params.slug);
         console.log("Fetching results for poll with slug:", slug);
         
         const resultsData = [];
