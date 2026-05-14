@@ -137,7 +137,7 @@ const Home = () => {
     {[
       {
         status: "Live",
-        title: "Frontend Framework Poll",
+        title: "Live Event Polling",
         yes: "78%",
         no: "22%",
         color: "from-cyan-500/20 to-transparent",
@@ -147,7 +147,7 @@ const Home = () => {
 
       {
         status: "Trending",
-        title: "Best Backend Runtime",
+        title: "Instant Team Decisions",
         yes: "92%",
         no: "8%",
         color: "from-green-500/20 to-transparent",
@@ -157,7 +157,7 @@ const Home = () => {
 
       {
         status: "Hot",
-        title: "Most Loved Database",
+        title: "Classroom Interactions",
         yes: "67%",
         no: "33%",
         color: "from-orange-500/20 to-transparent",
@@ -167,7 +167,7 @@ const Home = () => {
 
       {
         status: "New",
-        title: "Favorite UI Library",
+        title: "Social Community Polls",
         yes: "81%",
         no: "19%",
         color: "from-purple-500/20 to-transparent",
