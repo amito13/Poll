@@ -1,148 +1,237 @@
 import { Link } from "react-router-dom";
-import { useContext } from "react";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
+import { motion } from "framer-motion";
+
 const Navbar = () => {
 
- const [token, setToken] = useState(
-  localStorage.getItem("token")
-);
+  const [token, setToken] = useState(
+    localStorage.getItem("token")
+  );
 
   const { theme, toggleTheme } = useTheme();
-        useEffect(() => {
 
-          const checkAuth = () => {
+  useEffect(() => {
 
-            setToken(
-              localStorage.getItem("token")
-            );
+    const checkAuth = () => {
 
-          };
+      setToken(
+        localStorage.getItem("token")
+      );
 
-          window.addEventListener(
-            "storage",
-            checkAuth
-          );
+    };
 
-          checkAuth();
+    window.addEventListener(
+      "storage",
+      checkAuth
+    );
 
-          return () => {
+    checkAuth();
 
-            window.removeEventListener(
-              "storage",
-              checkAuth
-            );
+    return () => {
 
-          };
+      window.removeEventListener(
+        "storage",
+        checkAuth
+      );
 
-        }, []);
+    };
+
+  }, []);
+
   return (
-   <nav
-    className={`w-full border-b sticky top-0 z-50 transition-all duration-300
 
-    ${
+    <motion.nav
+
+      initial={{ y: -80, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6 }}
+
+      className={`sticky top-0 z-50 border-b backdrop-blur-2xl transition-all duration-300
+
+      ${
         theme === "dark"
-        ? "bg-black border-orange-500/10"
-        : "bg-white border-orange-200"
-    }`}>
+          ? "bg-black/60 border-orange-500/10"
+          : "bg-white/70 border-orange-200"
+      }`}
+    >
 
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      {/* glow */}
+      <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 via-transparent to-purple-500/5 pointer-events-none"></div>
 
+      <div className="relative max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+
+        {/* LOGO */}
         <Link
           to="/"
-          className="text-2xl font-bold text-orange-500"
+          className="flex items-center gap-3"
         >
-          PollX
+
+          <motion.div
+            whileHover={{
+              rotate: 10,
+              scale: 1.1,
+            }}
+            className="w-11 h-11 rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/30"
+          >
+            <span className="text-white font-black text-xl">
+              P
+            </span>
+          </motion.div>
+
+          <div>
+
+            <h1 className="text-2xl font-black bg-gradient-to-r from-orange-400 to-yellow-300 bg-clip-text text-transparent">
+              PollX
+            </h1>
+
+            <p className="text-xs text-gray-500 -mt-1">
+              Live Polling Platform
+            </p>
+
+          </div>
+
         </Link>
 
-        <div className="flex items-center gap-4">
+        {/* NAV LINKS */}
+        <div className="flex items-center gap-3">
 
           <Link
             to="/"
-                className={`hover:text-orange-500 transition-all duration-200
+            className={`hidden md:flex px-5 py-3 rounded-2xl transition-all duration-300 hover:scale-105
 
-                ${
-                theme === "dark"
-                    ? "text-gray-300"
-                    : "text-gray-700"
-                }`}
-                >
+            ${
+              theme === "dark"
+                ? "text-gray-300 hover:bg-zinc-900 hover:text-orange-400"
+                : "text-gray-700 hover:bg-orange-50 hover:text-orange-500"
+            }`}
+          >
             Home
           </Link>
-      
+
           {token ? (
 
             <div className="flex items-center gap-3">
 
-                    <Link
-                      to="/create"
-                      className="bg-orange-500 hover:bg-orange-600 transition-all duration-200 h-12 px-6 rounded-xl font-semibold flex items-center justify-center text-white"
-                    >
-                      Create Poll
-                    </Link>
+              {/* CREATE BUTTON */}
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
 
-                <button
-                  onClick={() => {
-
-                    localStorage.removeItem("token");
-
-                    window.location.href = "/login";
-
-                  }}
-                  className={`h-12 px-6 rounded-xl transition-all duration-200 border
-
-                  ${
-                    theme === "dark"
-                      ? "border-zinc-700 hover:border-red-500"
-                      : "border-orange-200 hover:border-red-500"
-                  }`}
+                <Link
+                  to="/create"
+                  className="relative overflow-hidden bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white h-12 px-7 rounded-2xl font-bold flex items-center justify-center shadow-xl shadow-orange-500/30 transition-all duration-300"
                 >
-                  Logout
-                </button>
 
-              </div>
-        
-          ) : (
+                  <span className="absolute inset-0 bg-white/10 translate-x-[-100%] hover:translate-x-[100%] transition-transform duration-700"></span>
 
-            <div className="flex gap-3">
+                  <span className="relative z-10">
+                    + Create Poll
+                  </span>
 
-              <Link
-                to="/login"
-                className={`transition-all duration-200 hover:text-orange-500 h-12 px-6 flex items-center justify-center
+                </Link>
+
+              </motion.div>
+
+              {/* LOGOUT */}
+              <button
+
+                onClick={() => {
+
+                  localStorage.removeItem("token");
+
+                  window.location.href = "/login";
+
+                }}
+
+                className={`h-12 px-6 rounded-2xl transition-all duration-300 border backdrop-blur-xl hover:scale-105
+
                 ${
                   theme === "dark"
-                    ? "text-gray-300"
-                    : "text-gray-800"
+                    ? "bg-zinc-900/60 border-zinc-700 hover:border-red-500 hover:bg-red-500/10"
+                    : "bg-white border-orange-200 hover:border-red-500 hover:bg-red-50"
+                }`}
+              >
+                Logout
+              </button>
+
+            </div>
+
+          ) : (
+
+            <div className="flex items-center gap-3">
+
+              {/* LOGIN */}
+              <Link
+
+                to="/login"
+
+                className={`h-12 px-6 rounded-2xl flex items-center justify-center transition-all duration-300 hover:scale-105
+
+                ${
+                  theme === "dark"
+                    ? "text-gray-300 hover:bg-zinc-900 hover:text-orange-400"
+                    : "text-gray-700 hover:bg-orange-50 hover:text-orange-500"
                 }`}
               >
                 Login
               </Link>
 
-              <Link
-                to="/register"
-                className="bg-orange-500 hover:bg-orange-600 transition-all duration-200 px-5 py-2 rounded-xl font-semibold"
+              {/* REGISTER */}
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                Register
-              </Link>
+
+                <Link
+
+                  to="/register"
+
+                  className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white px-6 h-12 rounded-2xl font-bold flex items-center justify-center shadow-xl shadow-orange-500/30 transition-all duration-300"
+                >
+                  Register
+                </Link>
+
+              </motion.div>
 
             </div>
-            
 
           )}
-          <button
+
+          {/* THEME BUTTON */}
+          <motion.button
+
+            whileHover={{
+              rotate: 180,
+              scale: 1.1,
+            }}
+
+            transition={{ duration: 0.5 }}
+
             onClick={toggleTheme}
-            className="border border-zinc-700 hover:border-orange-500 transition-all duration-200 px-4 py-2 rounded-xl"
+
+            className={`w-12 h-12 rounded-2xl border flex items-center justify-center text-lg transition-all duration-300
+
+            ${
+              theme === "dark"
+                ? "bg-zinc-900/70 border-zinc-700 hover:border-orange-500"
+                : "bg-white border-orange-200 hover:border-orange-500"
+            }`}
           >
+
             {theme === "dark" ? "☀️" : "🌙"}
-          </button>
+
+          </motion.button>
 
         </div>
 
       </div>
 
-    </nav>
+    </motion.nav>
+
   );
+
 };
 
 export default Navbar;
