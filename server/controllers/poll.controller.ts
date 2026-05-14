@@ -34,8 +34,8 @@ export const createPoll = async (req: Request, res: Response) => {
             expiresAt
         )
         
-        const slug = slugify(title, { lower: true, strict: true });
-        console.log("Generated slug:", slug);
+        const slug = slugify(title, { lower: true,  strict: true, }) + "-" +Date.now();
+        // console.log("Generated slug:", slug);
         
         const newPoll = await db
                 .insert(polls)
@@ -75,8 +75,7 @@ export const createPoll = async (req: Request, res: Response) => {
                         })
                                     .returning();
 
-                console.log(newOption);
-                console.log(question.options);
+                
                 }
                     }
                 
