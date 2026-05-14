@@ -60,11 +60,16 @@ export const register = async (req: Request, res: Response) => {
          });
     } catch (error) {
             console.error("Error during registration:", error);
-        res.status(500).json({
-            success: false,
-            message: "Error occurred while registering user"
-        });
-    }
+
+            res.status(500).json({
+                success: false,
+                message:
+                error instanceof Error
+                    ? error.message
+                    : "Unknown error",
+            });
+            }
+    
 };
 
 export const login = async (req: Request, res: Response) => {
